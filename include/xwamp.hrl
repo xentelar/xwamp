@@ -191,7 +191,7 @@
   }
 }).
 
--define(WAMP_RPC_FEATURES_SPEC, (?WAMP_COMMON_FEATURES_SPEC)#{
+-define(WAMP_RPC_FEATURES_SPEC, begin ?WAMP_COMMON_FEATURES_SPEC end#{
   <<"progressive_call_results">> => #{
     alias => <<"progressive_call_results">>,
     required => false,
@@ -224,7 +224,7 @@
   }
 }).
 
--define(WAMP_DEALER_FEATURES_SPEC, (?WAMP_RPC_FEATURES_SPEC)#{
+-define(WAMP_DEALER_FEATURES_SPEC, begin ?WAMP_RPC_FEATURES_SPEC end#{
   <<"call_reroute">> => #{
     alias => <<"call_reroute">>,
     required => false,
@@ -272,7 +272,7 @@
   }
 }).
 
--define(DEALER_FEATURES_SPEC, ?WAMP_DEALER_FEATURES_SPEC#{
+-define(DEALER_FEATURES_SPEC, begin ?WAMP_DEALER_FEATURES_SPEC end#{
   <<"call_retries">> => #{
     alias => <<"call_retries">>,
     required => false,
@@ -280,7 +280,7 @@
   }
 }).
 
--define(WAMP_PUBSUB_FEATURES_SPEC, (?WAMP_COMMON_FEATURES_SPEC)#{
+-define(WAMP_PUBSUB_FEATURES_SPEC, begin ?WAMP_COMMON_FEATURES_SPEC end#{
   <<"publisher_identification">> => #{
     alias => <<"publisher_identification">>,
     required => false,
@@ -293,7 +293,7 @@
   }
 }).
 
--define(BROKER_FEATURES_SPEC, (?WAMP_PUBSUB_FEATURES_SPEC)#{
+-define(BROKER_FEATURES_SPEC, begin ?WAMP_PUBSUB_FEATURES_SPEC end#{
   <<"subscriber_blackwhite_listing">> => #{
     alias => <<"subscriber_blackwhite_listing">>,
     required => false,
@@ -406,7 +406,7 @@
   }
 }).
 
--define(CALLEE_FEATURES_SPEC, (?WAMP_RPC_FEATURES_SPEC)#{
+-define(CALLEE_FEATURES_SPEC, begin ?WAMP_RPC_FEATURES_SPEC end#{
   <<"call_reroute">> => #{
     alias => <<"call_reroute">>,
     required => false,
@@ -454,7 +454,7 @@
   }
 }).
 
--define(CALLER_FEATURES_SPEC, ?WAMP_CALLER_FEATURES_SPEC#{
+-define(CALLER_FEATURES_SPEC, begin ?WAMP_CALLER_FEATURES_SPEC end#{
   <<"call_retries">> => #{
     alias => <<"call_retries">>,
     required => false,
@@ -462,10 +462,10 @@
   }
 }).
 
--define(WAMP_CALLER_FEATURES_SPEC, (?WAMP_RPC_FEATURES_SPEC)#{
+-define(WAMP_CALLER_FEATURES_SPEC, begin ?WAMP_RPC_FEATURES_SPEC end#{
 }).
 
--define(SUBSCRIBER_FEATURES_SPEC, (?WAMP_PUBSUB_FEATURES_SPEC)#{
+-define(SUBSCRIBER_FEATURES_SPEC, begin ?WAMP_PUBSUB_FEATURES_SPEC end#{
   <<"publication_trustlevels">> => #{
     alias => <<"publication_trustlevels">>,
     required => false,
@@ -488,7 +488,7 @@
   }
 }).
 
--define(PUBLISHER_FEATURES_SPEC, (?WAMP_PUBSUB_FEATURES_SPEC)#{
+-define(PUBLISHER_FEATURES_SPEC, begin ?WAMP_PUBSUB_FEATURES_SPEC end#{
   <<"subscriber_blackwhite_listing">> => #{
     alias => <<"subscriber_blackwhite_listing">>,
     required => false,
@@ -505,6 +505,9 @@
 %% WAMP MESSAGES
 %% =============================================================================
 
+%% -----------------------------------------------------------------------------
+%% SESSION
+%% -----------------------------------------------------------------------------
 -define(HELLO,    				    1).
 -define(WELCOME,    			    2).
 -define(ABORT,    				    3).
@@ -596,8 +599,8 @@
 -define(WILDCARD_MATCH,	<<"wildcard">>).
 -define(MATCH_STRATEGIES, [
 		?EXACT_MATCH,
-  ?PREFIX_MATCH,
-  ?WILDCARD_MATCH
+    ?PREFIX_MATCH,
+    ?WILDCARD_MATCH
 ]).
 
 -define(PPT_DETAILS_SPEC, #{
@@ -724,7 +727,7 @@
   details     ::  map()
 }).
 
--type wamp_welcome()     ::  #welcome{}.
+-type wamp_welcome()  ::  #welcome{}.
 
 -define(WELCOME_DETAILS_SPEC, #{
   <<"realm">> => #{
@@ -815,7 +818,7 @@
   extra       ::  map()
 }).
 
--type wamp_challenge()     ::  #challenge{}.
+-type wamp_challenge()  ::  #challenge{}.
 
 -define(CHALLENGE_EXTRA_SPEC, #{
   <<"challenge">> => #{
@@ -866,7 +869,7 @@
   extra       ::  map()
 }).
 
--type wamp_authenticate()     ::  #authenticate{}.
+-type wamp_authenticate() ::  #authenticate{}.
 
 %% -----------------------------------------------------------------------------
 %% GOODBYE 6
@@ -877,7 +880,7 @@
   reason_uri  ::  uri()
 }).
 
--type wamp_goodbye()     ::  #goodbye{}.
+-type wamp_goodbye()  ::  #goodbye{}.
 
 -define(GOODBYE_DETAILS_SPEC, #{
   <<"message">> => #{
@@ -894,10 +897,10 @@
 -record(error, {
   request_type  ::  pos_integer(),
   request_id    ::  id(),
-  details     ::  map(),
+  details       ::  map(),
   error_uri     ::  uri(),
-  args      ::  list() | undefined,
-  kwargs      ::  map() | undefined
+  args          ::  list() | undefined,
+  kwargs        ::  map() | undefined
 }).
 -type wamp_error()     ::  #error{}.
 
@@ -916,9 +919,9 @@
   kwargs        ::  map() | undefined
 }).
 
--type wamp_publish()     ::  #publish{}.
+-type wamp_publish()  ::  #publish{}.
 
--define(PUBLISH_OPTS_SPEC, ?PPT_DETAILS_SPEC#{
+-define(PUBLISH_OPTS_SPEC, begin ?PPT_DETAILS_SPEC end#{
   %% resource key
   <<"acknowledge">> => #{
     alias => <<"acknowledge">>,
@@ -988,7 +991,7 @@
   publication_id  ::  id()
 }).
 
--type wamp_published()     ::  #published{}.
+-type wamp_published()  ::  #published{}.
 
 %% -----------------------------------------------------------------------------
 %% SUBSCRIBE 32
@@ -1000,7 +1003,7 @@
   topic_uri     ::  uri()
 }).
 
--type wamp_subscribe()     ::  #subscribe{}.
+-type wamp_subscribe()  ::  #subscribe{}.
 
 -define(SUBSCRIBE_OPTS_SPEC, #{
   <<"match">> => #{
@@ -1066,7 +1069,7 @@
 
 -type wamp_event()     ::  #event{}.
 
--define(EVENT_DETAILS_SPEC, ?PPT_DETAILS_SPEC#{
+-define(EVENT_DETAILS_SPEC, begin ?PPT_DETAILS_SPEC end#{
   <<"acknowledge">> => #{
     alias => <<"acknowledge">>,
     required => false,
@@ -1113,7 +1116,7 @@
 
 -type wamp_call()     ::  #call{}.
 
--define(WAMP_CALL_OPTS_SPEC, ?PPT_DETAILS_SPEC#{
+-define(WAMP_CALL_OPTS_SPEC, begin ?PPT_DETAILS_SPEC end#{
   <<"timeout">> => #{
     alias => <<"timeout">>,
     required => false,
@@ -1174,7 +1177,7 @@
 
 -type wamp_result()     ::  #result{}.
 
--define(RESULT_DETAILS_SPEC, ?PPT_DETAILS_SPEC#{
+-define(RESULT_DETAILS_SPEC, begin ?PPT_DETAILS_SPEC end#{
   <<"progress">> => #{
     alias => <<"progress">>,
     required => false,
@@ -1286,7 +1289,7 @@
 
 -type wamp_invocation()     ::  #invocation{}.
 
--define(INVOCATION_DETAILS_SPEC, ?PPT_DETAILS_SPEC#{
+-define(INVOCATION_DETAILS_SPEC, begin ?PPT_DETAILS_SPEC end#{
   <<"trustlevel">> => #{
     alias => <<"trustlevel">>,
     required => false,
